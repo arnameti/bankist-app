@@ -102,6 +102,25 @@ const calcDisplaytBalance = function (movements) {
 calcDisplaytBalance(movements);
 
 
+const calcDisplaySummary = function (movements) {
+  const incomes = movements
+    .filter(mov => mov > 0)
+    .reduce((acc, mov) => acc + mov, 0);
+  labelSumIn.textContent = `${incomes} EUR`;
+
+  const out = movements.filter(mov => mov < 0).reduce((acc, mov) => acc + mov);
+  labelSumOut.textContent = `${Math.abs(out)} EUR`;
+
+  const interests = movements
+    .filter(mov => mov > 0)
+    .map(deposit => deposit *1.2/100)
+    .filter(int => int >= 1)
+    .reduce((acc, int) => acc + int, 0);
+    labelSumInterest.textContent = `${interests} EUR`;
+};
+calcDisplaySummary(account1.movements);
+
+
 const createUsernames = function (accs) {
   accs.forEach(function (acc) {
     acc.username = acc.owner
