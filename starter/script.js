@@ -173,8 +173,6 @@ btnTransfer.addEventListener('click', function (e) {
     acc => acc.username === inputTransferTo.value
   );
 
-
-
   if (
     receiverAcc &&
     currentAccount.username !== receiverAcc.username &&
@@ -190,6 +188,26 @@ btnTransfer.addEventListener('click', function (e) {
 
   displayUI(currentAccount);
 });
+
+/////////////////////////////////////////////////////////////////////////////
+// Implemeting Loan
+
+btnLoan.addEventListener('click', function (e) {
+  e.preventDefault();
+
+  const amount = Number(inputLoanAmount.value)
+
+  if (
+    amount > 0 &&
+    currentAccount.movements.some(mov => amount < mov * 0.1)
+  ) {
+    currentAccount.movements.push(amount);
+    displayUI(currentAccount);
+  }
+
+  inputLoanAmount.value = '';
+
+})
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -211,3 +229,5 @@ btnClose.addEventListener('click', function(e) {
   inputClosePin.value = '';
 })
 
+
+/////////////////////////////////////////////////////////////////////////////
