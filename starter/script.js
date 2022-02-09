@@ -101,20 +101,25 @@ const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
 /////////////////////////////////////////////////
 
-const formatMovementDate = function (date) {
-  const calcDaysPassed = (date1, date2) => Math.round(Math.abs(date2 - date1) /(1000 * 60 * 60 * 24));
+const formatMovementDate = function (date, locale) {
+  const calcDaysPassed = (date1, date2) =>
+    Math.round(Math.abs(date2 - date1) / (1000 * 60 * 60 * 24));
   const currentDate = Number(new Date());
   const daysPassed = calcDaysPassed(currentDate, date);
 
-  if(daysPassed === 0) return 'Today';
-  if(daysPassed === 1) return 'Yesterday';
-  if(daysPassed <= 7) return `${daysPassed} days ago`;
-  
-  const year = date.getFullYear();
-  const month = `${date.getMonth() + 1}`.padStart(2, 0);
-  const day = `${date.getDate()}`.padStart(2, 0);
-   return `${day}/${month}/${year}`;
-}
+  if (daysPassed === 0) return 'Today';
+  if (daysPassed === 1) return 'Yesterday';
+  if (daysPassed <= 7) return `${daysPassed} days ago`;
+
+  // const year = date.getFullYear();
+  // const month = `${date.getMonth() + 1}`.padStart(2, 0);
+  // const day = `${date.getDate()}`.padStart(2, 0);
+  //  return `${day}/${month}/${year}`;
+
+  return new Intl.DateTimeFormat(locale).format(date);
+};
+
+/////////////////////////////////////////////////
 
 const displayMovements = function (acc) {
   containerMovements.innerHTML = '';
@@ -123,8 +128,7 @@ const displayMovements = function (acc) {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
 
     const date = new Date(acc.movementsDates[i]);
-    const displayDate = formatMovementDate(date);
-
+    const displayDate = formatMovementDate(date, acc.locale);
 
     const html = `
     <div class="movements__row">
@@ -137,6 +141,8 @@ const displayMovements = function (acc) {
   });
 };
 
+/////////////////////////////////////////////////
+
 const calcDisplayBalance = function (acc) {
   acc.balance = acc.movements.reduce(
     (accumulator, mov) => accumulator + mov,
@@ -144,6 +150,8 @@ const calcDisplayBalance = function (acc) {
   );
   labelBalance.textContent = `${acc.balance} EUR`;
 };
+
+/////////////////////////////////////////////////
 
 const displaySummery = function (acc) {
   const incomes = acc.movements
@@ -163,6 +171,8 @@ const displaySummery = function (acc) {
   labelSumInterest.innerHTML = `${interests} EUR`;
 };
 
+/////////////////////////////////////////////////
+
 const displayUI = function (acc) {
   // Dislay Movements
   displayMovements(acc);
@@ -171,6 +181,8 @@ const displayUI = function (acc) {
   // Display Summery
   displaySummery(acc);
 };
+
+/////////////////////////////////////////////////
 
 const createUsername = function (accounts) {
   accounts.forEach(function (acc) {
@@ -182,6 +194,7 @@ const createUsername = function (accounts) {
   });
 };
 createUsername(accounts);
+
 
 /////////////////////////////////////////////////////////////////////////////
 // Implemeting Login
@@ -202,14 +215,17 @@ btnLogin.addEventListener('click', function (e) {
   }
 
   const date = new Date();
-  const year = date.getFullYear();
-  const month = `${date.getMonth()}`.padStart(2, 0);
-  const day = `${date.getDate()}`.padStart(2, 0);
-  const hour = `${date.getHours()}`.padStart(2, 0);
-  const minutes = `${date.getMinutes()}`.padStart(2, 0);
+  // const year = date.getFullYear();
+  // const month = `${date.getMonth()}`.padStart(2, 0);
+  // const day = `${date.getDate()}`.padStart(2, 0);
+  // const hour = `${date.getHours()}`.padStart(2, 0);
+  // const minutes = `${date.getMinutes()}`.padStart(2, 0);
 
-  const displayDate = `${day}/${month}/${year}: ${hour}:${minutes}`;
-  labelDate.textContent = displayDate;
+  // const displayDate = `${day}/${month}/${year}: ${hour}:${minutes}`;
+  // labelDate.textContent = displayDate;
+
+  labelDate.textContent = new Intl.DateTimeFormat(currentAccount.locale).format(date);
+
 
   //clear input fields
   inputLoginUsername.value = '';
@@ -286,4 +302,3 @@ btnClose.addEventListener('click', function (e) {
 });
 
 /////////////////////////////////////////////////////////////////////////////
-
