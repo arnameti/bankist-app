@@ -87,8 +87,7 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 // LECTURES
 
 const currencies = new Map([
@@ -99,7 +98,7 @@ const currencies = new Map([
 
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
-/////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 
 const formatMovementDate = function (date, locale) {
   const calcDaysPassed = (date1, date2) =>
@@ -119,12 +118,14 @@ const formatMovementDate = function (date, locale) {
   return new Intl.DateTimeFormat(locale).format(date);
 };
 
-/////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 
-const displayMovements = function (acc) {
+const displayMovements = function (acc, sort = false) {
   containerMovements.innerHTML = '';
 
-  acc.movements.map(function (mov, i) {
+  const movs = sort ? acc.movements.slice().sort((a, b) => a - b) : acc.movements
+
+  movs.forEach(function (mov, i) {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
 
     const date = new Date(acc.movementsDates[i]);
@@ -141,7 +142,7 @@ const displayMovements = function (acc) {
   });
 };
 
-/////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 
 const calcDisplayBalance = function (acc) {
   acc.balance = acc.movements.reduce(
@@ -151,7 +152,7 @@ const calcDisplayBalance = function (acc) {
   labelBalance.textContent = `${acc.balance} EUR`;
 };
 
-/////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 
 const displaySummery = function (acc) {
   const incomes = acc.movements
@@ -171,7 +172,7 @@ const displaySummery = function (acc) {
   labelSumInterest.innerHTML = `${interests} EUR`;
 };
 
-/////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 
 const displayUI = function (acc) {
   // Dislay Movements
@@ -182,7 +183,7 @@ const displayUI = function (acc) {
   displaySummery(acc);
 };
 
-/////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 
 const createUsername = function (accounts) {
   accounts.forEach(function (acc) {
@@ -302,3 +303,11 @@ btnClose.addEventListener('click', function (e) {
 });
 
 /////////////////////////////////////////////////////////////////////////////
+//btn.sort
+
+let sorted = false;
+btnSort.addEventListener('click', function(e) {
+  e.preventDefault();
+  displayMovements(currentAccount, !sorted);
+  sorted = !sorted;
+})
